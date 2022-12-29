@@ -7,10 +7,16 @@ import (
 	"strings"
 )
 
+func (api *RestAPI) configureRouters() {
+	// /create?url=https://someurl.com
+	api.router.HandleFunc("/create", api.createURL)
+	api.router.HandleFunc("/", api.redirect)
+}
+
 func (api *RestAPI) redirect(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusNotFound)
-		return 
+		return
 	}
 
 	hash := strings.ReplaceAll(r.URL.Path, "/", "")
@@ -31,7 +37,7 @@ func (api *RestAPI) redirect(w http.ResponseWriter, r *http.Request) {
 func (api *RestAPI) createURL(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusNotFound)
-		return 
+		return
 	}
 
 	query := r.URL.Query()
@@ -42,13 +48,13 @@ func (api *RestAPI) createURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	short_url, err := api.db.CreateURL(context.Background(), url)
+	short_url, err := api.db.CreateShortURL(context.Background(), url)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(fmt.Sprintf("http://localhost%s/%s\n", api.config.BindAddr, short_url)))
 }

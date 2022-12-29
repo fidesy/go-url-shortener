@@ -1,4 +1,4 @@
-package postgresdb
+package database
 
 import (
 	"context"
@@ -9,8 +9,7 @@ import (
 )
 
 var (
-	db = New()
-	ctx = context.Background()
+	db = NewPostgreSQL()
 	urls = map[string]string{
 		"https://google.com": "",
 		"https://amazon.com": "",
@@ -20,13 +19,13 @@ var (
 )
 
 func TestOpenPostgresDB(t *testing.T) {
-	err := db.Open(ctx, os.Getenv("DBURI"))
+	err := db.Open(context.Background(), os.Getenv("DBURL"))
 	assert.Nil(t, err)
 }
 
 func TestCreateURL(t *testing.T) {
 	for url := range urls {
-		hash, err := db.CreateURL(ctx, url)
+		hash, err := db.CreateShortURL(context.Background(), url)
 		assert.Nil(t, err)
 		urls[url] = hash
 	}
@@ -34,10 +33,13 @@ func TestCreateURL(t *testing.T) {
 
 func TestGetOriginalURL(t *testing.T) {
 	for original_url, hash := range urls {
-		url, err := db.GetOriginalURL(ctx, hash)
+		url, err := db.GetOriginalURL(context.Background(), hash)
 		assert.Nil(t, err)
 		assert.Equal(t, original_url, url)
 	}
+}
 
-	db.Close()
+func TestCloseDatabase(t *testing.T) {
+	err := db.Close(context.Background())
+	assert.Nil(t, err)
 }

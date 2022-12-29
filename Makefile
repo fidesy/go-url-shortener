@@ -11,7 +11,12 @@ connect:
 	docker exec -it urlsdb bash -c "psql -U xsecretuser -d urls"
 
 build:
-	docker build --tag go-url-shortener .
+	docker build --tag fidesy/go-url-shortener .
 
 run:
 	docker run --name go-url-shortener -dp 80:80 fidesy/go-url-shortener
+
+remove:
+	docker rm -f urlsdb
+	docker rm -f go-url-shortener
+	docker rmi fidesy/go-url-shortener

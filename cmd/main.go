@@ -5,17 +5,17 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/fidesy/go-url-shortener/pkg/restapi"
+	"github.com/joho/godotenv"
 )
- 
+
 func main() {
 	err := godotenv.Load()
 	checkError(err)
 
 	api := restapi.New(&restapi.RestAPIConfig{
-		BindAddr:      os.Getenv("BIND_ADDR"),
-		DBURI:         os.Getenv("DBURI"),
+		BindAddr: os.Getenv("BIND_ADDR"),
+		DBURL:    os.Getenv("DBURL"),
 	})
 
 	err = api.Start(context.Background())
