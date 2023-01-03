@@ -9,11 +9,11 @@ import (
 )
 
 var (
-	db = NewPostgreSQL()
+	db   = NewPostgreSQL()
 	urls = map[string]string{
-		"https://google.com": "",
-		"https://amazon.com": "",
-		"https://ozon.ru": "",
+		"https://google.com":                 "",
+		"https://amazon.com":                 "",
+		"https://ozon.ru":                    "",
 		"https://yandex.ru/some/unique/path": "",
 	}
 )
@@ -40,6 +40,5 @@ func TestGetOriginalURL(t *testing.T) {
 }
 
 func TestCloseDatabase(t *testing.T) {
-	err := db.Close(context.Background())
-	assert.Nil(t, err)
+	db.Close()
 }

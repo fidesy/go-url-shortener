@@ -31,7 +31,7 @@ func (api *RestAPI) Start(ctx context.Context) error {
 	if err := api.configureDatabase(ctx); err != nil {
 		return err
 	}
-	defer api.db.Close(context.Background())
+	defer api.db.Close()
 
 	return http.ListenAndServe(api.config.BindAddr, api.router)
 }

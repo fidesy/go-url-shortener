@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"github.com/fidesy/go-url-shortener/pkg/shortener"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type PostgreSQL struct {
-	conn *pgx.Conn
+	pool *pgxpool.Pool
 }
 
 func NewPostgreSQL() *PostgreSQL {
@@ -26,26 +26,26 @@ CREATE TABLE IF NOT EXISTS urls (
 );`
 
 func (p *PostgreSQL) Open(ctx context.Context, DBURL string) error {
-	connection, err := pgx.Connect(ctx, DBURL)
+	pool, err := pgxpool.New(ctx, DBURL)
 	if err != nil {
 		return err
 	}
 
-	if err := connection.Ping(ctx); err != nil {
+	if err := pool.Ping(ctx); err != nil {
 		return err
 	}
 
-	if _, err = connection.Exec(ctx, initScheme); err != nil {
+	if _, err = pool.Exec(ctx, initScheme); err != nil {
 		return err
 	}
 
-	p.conn = connection
+	p.pool = pool
 
 	return nil
 }
 
-func (p *PostgreSQL) Close(ctx context.Context) error {
-	return p.conn.Close(ctx)
+func (p *PostgreSQL) Close() {
+	p.pool.Close()
 }
 
 const (
@@ -64,12 +64,12 @@ func (p *PostgreSQL) CreateShortURL(ctx context.Context, originalURL string) (st
 		}
 	}
 
-	_, err := p.conn.Exec(ctx, insertTemplate, hash, originalURL, time.Now(), nil)
+	_, err := p.pool.Exec(ctx, insertTemplate, hash, originalURL, time.Now(), nil)
 	return hash, err
 }
 
 func (p *PostgreSQL) GetOriginalURL(ctx context.Context, hash string) (string, error) {
-	rows, err := p.conn.Query(ctx, selectTemplate, hash)
+	rows, err := p.pool.Query(ctx, selectTemplate, hash)
 	if err != nil {
 		return "", err
 	}
