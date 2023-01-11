@@ -7,10 +7,15 @@ import (
 	"github.com/fidesy/go-url-shortener/pkg/database"
 )
 
+// BindAddr - server running port
+// DBURL - database connection string
+// DBName - name of database ('postgresql', ...)
 type RestAPIConfig struct {
 	BindAddr string
 	DBURL    string
+	DBName   string
 }
+
 
 type RestAPI struct {
 	config *RestAPIConfig
@@ -18,12 +23,18 @@ type RestAPI struct {
 	db     database.Database
 }
 
-func New(config *RestAPIConfig) *RestAPI {
+// RestAPI constructor
+func New(config *RestAPIConfig) (*RestAPI, error) {
+	db, err := database.NewDatabase(config.DBName)
+	if err != nil {
+		return nil, err
+	}
+
 	return &RestAPI{
 		config: config,
 		router: http.NewServeMux(),
-		db:     database.NewPostgreSQL(),
-	}
+		db:     db,
+	}, nil
 }
 
 func (api *RestAPI) Start(ctx context.Context) error {

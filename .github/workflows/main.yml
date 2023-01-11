@@ -35,3 +35,4 @@ jobs:
         env:
           BIND_ADDR: :8080
           DBURL: postgres://postgres:postgres@localhost:5432/postgres
+          DBName: postgresql

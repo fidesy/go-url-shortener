@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	db   = NewPostgreSQL()
-	urls = map[string]string{
+	db, _ = NewDatabase("postgresql")
+	urls  = map[string]string{
 		"https://google.com":                 "",
 		"https://amazon.com":                 "",
 		"https://ozon.ru":                    "",

@@ -13,10 +13,6 @@ type PostgreSQL struct {
 	pool *pgxpool.Pool
 }
 
-func NewPostgreSQL() *PostgreSQL {
-	return &PostgreSQL{}
-}
-
 const initScheme = `
 CREATE TABLE IF NOT EXISTS urls (
     hash            VARCHAR(6) PRIMARY KEY,

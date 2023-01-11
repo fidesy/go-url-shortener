@@ -13,10 +13,12 @@ func main() {
 	err := godotenv.Load()
 	checkError(err)
 
-	api := restapi.New(&restapi.RestAPIConfig{
+	api, err := restapi.New(&restapi.RestAPIConfig{
 		BindAddr: os.Getenv("BIND_ADDR"),
 		DBURL:    os.Getenv("DBURL"),
+		DBName:   os.Getenv("DBName"),
 	})
+	checkError(err)
 
 	err = api.Start(context.Background())
 	checkError(err)
