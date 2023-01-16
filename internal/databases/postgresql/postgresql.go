@@ -1,11 +1,11 @@
-package database
+package postgresql
 
 import (
 	"context"
 	"errors"
+	"github.com/fidesy/go-url-shortener/internal/shortener"
 	"time"
 
-	"github.com/fidesy/go-url-shortener/pkg/shortener"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -13,13 +13,21 @@ type PostgreSQL struct {
 	pool *pgxpool.Pool
 }
 
-const initScheme = `
-CREATE TABLE IF NOT EXISTS urls (
-    hash            VARCHAR(6) PRIMARY KEY,
-    original_url    VARCHAR,
-    creation_date   DATE,
-    expiration_date DATE
-);`
+func New() *PostgreSQL {
+	return &PostgreSQL{}
+}
+
+const (
+	initScheme = `
+	CREATE TABLE IF NOT EXISTS urls (
+    	hash            VARCHAR(6) PRIMARY KEY,
+    	original_url    VARCHAR,
+    	creation_date   DATE,
+    	expiration_date DATE
+	);`
+	insertTemplate = "INSERT INTO urls VALUES($1, $2, $3, $4)"
+	selectTemplate = "SELECT original_url FROM urls WHERE hash=$1"
+)
 
 func (p *PostgreSQL) Open(ctx context.Context, DBURL string) error {
 	pool, err := pgxpool.New(ctx, DBURL)
@@ -43,11 +51,6 @@ func (p *PostgreSQL) Open(ctx context.Context, DBURL string) error {
 func (p *PostgreSQL) Close() {
 	p.pool.Close()
 }
-
-const (
-	insertTemplate = "INSERT INTO urls VALUES($1, $2, $3, $4)"
-	selectTemplate = "SELECT original_url FROM urls WHERE hash=$1"
-)
 
 func (p *PostgreSQL) CreateShortURL(ctx context.Context, originalURL string) (string, error) {
 	var hash string

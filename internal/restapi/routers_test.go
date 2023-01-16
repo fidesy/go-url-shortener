@@ -51,8 +51,8 @@ func TestCreateShortURL(t *testing.T) {
 func TestRedirect(t *testing.T) {
 	w := httptest.NewRecorder()
 
-	for _, short_url := range urls {
-		hash := short_url[len(short_url)-7:]
+	for _, shortURL := range urls {
+		hash := shortURL[len(shortURL)-7:]
 		req, _ := http.NewRequest(http.MethodGet, "/"+hash, nil)
 
 		api.router.ServeHTTP(w, req)

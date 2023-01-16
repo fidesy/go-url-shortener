@@ -2,6 +2,7 @@ package shortener
 
 import (
 	"math/rand"
+	"strings"
 )
 
 var (
@@ -10,10 +11,12 @@ var (
 
 func GetRandomSequence(length int) string {
 	// Returns random string
-	var str string
-	for len(str) < length {
-		str += string(signs[rand.Intn(len(signs))])
+	var str = strings.Builder{}
+	str.Grow(length)
+
+	for i := 0; i < length; i++ {
+		str.WriteString(string(signs[rand.Intn(len(signs))]))
 	}
 
-	return str
+	return str.String()
 }

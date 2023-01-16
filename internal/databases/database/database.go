@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"errors"
+	"github.com/fidesy/go-url-shortener/internal/databases/postgresql"
 )
 
 type Database interface {
@@ -12,10 +13,10 @@ type Database interface {
 	GetOriginalURL(context.Context, string) (string, error)
 }
 
-func NewDatabase(DBName string) (Database, error) {
+func New(DBName string) (Database, error) {
 	switch DBName {
 	case "postgresql":
-		return &PostgreSQL{}, nil
+		return postgresql.New(), nil
 	default:
 		return nil, errors.New("unknown name of database, options: 'postgresql'")
 	}

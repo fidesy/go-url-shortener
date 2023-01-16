@@ -2,11 +2,11 @@ package restapi
 
 import (
 	"context"
+	"github.com/fidesy/go-url-shortener/internal/databases/database"
 	"net/http"
-
-	"github.com/fidesy/go-url-shortener/pkg/database"
 )
 
+// RestAPIConfig
 // BindAddr - server running port
 // DBURL - database connection string
 // DBName - name of database ('postgresql', ...)
@@ -16,25 +16,28 @@ type RestAPIConfig struct {
 	DBName   string
 }
 
-
 type RestAPI struct {
 	config *RestAPIConfig
 	router *http.ServeMux
 	db     database.Database
 }
 
-// RestAPI constructor
+// New RestAPI constructor
 func New(config *RestAPIConfig) (*RestAPI, error) {
-	db, err := database.NewDatabase(config.DBName)
+	api := &RestAPI{}
+
+	api.config = config
+
+	db, err := database.New(config.DBName)
 	if err != nil {
 		return nil, err
 	}
 
-	return &RestAPI{
-		config: config,
-		router: http.NewServeMux(),
-		db:     db,
-	}, nil
+	api.db = db
+
+	api.router = http.NewServeMux()
+	
+	return api, nil
 }
 
 func (api *RestAPI) Start(ctx context.Context) error {

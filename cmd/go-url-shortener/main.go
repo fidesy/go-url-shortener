@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
+	"github.com/fidesy/go-url-shortener/internal/restapi"
 	"log"
 	"os"
 
-	"github.com/fidesy/go-url-shortener/pkg/restapi"
 	"github.com/joho/godotenv"
 )
 

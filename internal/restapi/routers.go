@@ -25,13 +25,13 @@ func (api *RestAPI) redirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	original_url, err := api.db.GetOriginalURL(context.Background(), hash)
+	originalURL, err := api.db.GetOriginalURL(context.Background(), hash)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	http.Redirect(w, r, original_url, http.StatusPermanentRedirect)
+	http.Redirect(w, r, originalURL, http.StatusPermanentRedirect)
 }
 
 func (api *RestAPI) createURL(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +48,7 @@ func (api *RestAPI) createURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	short_url, err := api.db.CreateShortURL(context.Background(), url)
+	shortURL, err := api.db.CreateShortURL(context.Background(), url)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -56,5 +56,5 @@ func (api *RestAPI) createURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("http://localhost%s/%s", api.config.BindAddr, short_url)))
+	w.Write([]byte(fmt.Sprintf("http://localhost%s/%s", api.config.BindAddr, shortURL)))
 }

@@ -1,4 +1,4 @@
-package database
+package postgresql
 
 import (
 	"context"
@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	db, _ = NewDatabase("postgresql")
-	urls  = map[string]string{
+	db   = New()
+	urls = map[string]string{
 		"https://google.com":                 "",
 		"https://amazon.com":                 "",
 		"https://ozon.ru":                    "",
@@ -32,10 +32,10 @@ func TestCreateURL(t *testing.T) {
 }
 
 func TestGetOriginalURL(t *testing.T) {
-	for original_url, hash := range urls {
+	for originalURL, hash := range urls {
 		url, err := db.GetOriginalURL(context.Background(), hash)
 		assert.Nil(t, err)
-		assert.Equal(t, original_url, url)
+		assert.Equal(t, originalURL, url)
 	}
 }
 
