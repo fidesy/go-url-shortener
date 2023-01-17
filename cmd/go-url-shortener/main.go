@@ -14,9 +14,10 @@ func main() {
 	checkError(err)
 
 	api, err := restapi.New(&restapi.RestAPIConfig{
-		BindAddr: os.Getenv("BIND_ADDR"),
-		DBURL:    os.Getenv("DBURL"),
-		DBName:   os.Getenv("DBName"),
+		Host:   os.Getenv("HOST"),
+		Port:   os.Getenv("PORT"),
+		DBURL:  os.Getenv("DB_URL"),
+		DBName: os.Getenv("DB_NAME"),
 	})
 	checkError(err)
 

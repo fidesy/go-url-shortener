@@ -56,5 +56,5 @@ func (api *RestAPI) createURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("http://localhost%s/%s", api.config.BindAddr, shortURL)))
+	w.Write([]byte(fmt.Sprintf("%s:%s/%s", api.config.Host, api.config.Port, shortURL)))
 }

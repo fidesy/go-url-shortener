@@ -3,22 +3,29 @@ simple url shortener written in Go.
 
 ## Installation
 
-1. Install postgres docker image and run it
-```bash
-docker pull postgres
-
-docker run --name urlsdb \
-   -e POSTGRES_USER=xsecretuser \
-   -e POSTGRES_PASSWORD=kj1890Opokb19lf \
-   -e POSTGRES_DB=urls \
-   -dp 5432:5432 postgres 
+1. Clone the repository.
 ```
-2. Install url-shortener app and run it
-```bash
-docker pull fidesy/go-url-shortener
+git clone https://github.com/fidesy/go-url-shortener.git
+cd go-url-shortener
+```
+2. Create .env file with the following variables. The HOST variable is only needed to create a response with a short URL.
+```
+# Example
+HOST=http://localhost
+PORT=80
 
-docker run --name go-url-shortener \
-    -dp 80:80 fidesy/go-url-shortener
+# Postgres credentials to create the database
+POSTGRES_USER=xsecretuser
+POSTGRES_PASSWORD=kj1890Opokb19lf
+POSTGRES_DB=urls
+
+# We use urlsdb host - PostgreSQL docker container name 
+DB_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@urlsdb/${POSTGRES_DB}?sslmode=disable
+DB_NAME=postgresql
+```
+3. Run app.
+```
+docker compose up -d
 ```
 ## Usage
 

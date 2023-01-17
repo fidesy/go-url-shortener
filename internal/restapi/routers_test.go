@@ -23,9 +23,10 @@ var (
 
 func TestNewRestAPI(t *testing.T) {
 	api, err = New(&RestAPIConfig{
-		BindAddr: os.Getenv("BIND_ADDR"),
-		DBURL:    os.Getenv("DBURL"),
-		DBName:   os.Getenv("DBName"),
+		Host:   os.Getenv("HOST"),
+		Port:   os.Getenv("PORT"),
+		DBURL:  os.Getenv("DB_URL"),
+		DBName: os.Getenv("DB_NAME"),
 	})
 	assert.Nil(t, err)
 	assert.NotNil(t, api)
@@ -38,9 +39,8 @@ func TestConfigureRoutersAndDatabase(t *testing.T) {
 }
 
 func TestCreateShortURL(t *testing.T) {
-	w := httptest.NewRecorder()
-
 	for url := range urls {
+		w := httptest.NewRecorder()
 		req, _ := http.NewRequest(http.MethodPost, "/create?url="+url, nil)
 		api.router.ServeHTTP(w, req)
 		assert.Equal(t, 200, w.Code)
@@ -49,15 +49,13 @@ func TestCreateShortURL(t *testing.T) {
 }
 
 func TestRedirect(t *testing.T) {
-	w := httptest.NewRecorder()
-
-	for _, shortURL := range urls {
-		hash := shortURL[len(shortURL)-7:]
-		req, _ := http.NewRequest(http.MethodGet, "/"+hash, nil)
-
+	for originalURL, shortURL := range urls {
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest(http.MethodGet, shortURL, nil)
 		api.router.ServeHTTP(w, req)
-		assert.Equal(t, 301, w.Code)
-		assert.Contains(t, w.Body.String(), "Moved Permanently")
+		assert.Equal(t, http.StatusPermanentRedirect, w.Code)
+		// response text should contain html <a> tag with an url to redirect
+		assert.Contains(t, w.Body.String(), originalURL)
 	}
 
 	api.db.Close()

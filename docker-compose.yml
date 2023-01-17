@@ -1,25 +1,14 @@
 version: "3.9"
 services:
-  # redis:
-  #   container_name: urls_cache
-  #   image: redis:latest
-  #   ports:
-  #     - "6379:6379"
-  #   command: redis-server --save 20 1 --loglevel warning --requirepass secretpass1
-    
   postgres:
     container_name: urlsdb
     image: postgres:latest
-    environment:
-      POSTGRES_DB: "urls"
-      POSTGRES_USER: "xsecretuser"
-      POSTGRES_PASSWORD: "kj1890Opokb19lf"
-    volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - .env
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U xsecretuser -d urls"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,8 +17,10 @@ services:
   url-shortener:
     container_name: url-shortener
     build: ./
+    env_file:
+      - .env
     ports:
-      - '80:80'
+      - '${PORT}:${PORT}'
     depends_on:
       postgres:
         condition: service_healthy

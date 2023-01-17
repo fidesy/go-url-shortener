@@ -9,4 +9,5 @@ import (
 func TestGetRandomSequence(t *testing.T) {
 	randomStr := GetRandomSequence(6)
 	assert.NotNil(t, randomStr)
+	assert.Equal(t, 6, len(randomStr))
 }

@@ -3,7 +3,9 @@ package restapi
 import (
 	"context"
 	"github.com/fidesy/go-url-shortener/internal/databases/database"
+	"math/rand"
 	"net/http"
+	"time"
 )
 
 // RestAPIConfig
@@ -11,9 +13,10 @@ import (
 // DBURL - database connection string
 // DBName - name of database ('postgresql', ...)
 type RestAPIConfig struct {
-	BindAddr string
-	DBURL    string
-	DBName   string
+	Host   string
+	Port   string
+	DBURL  string
+	DBName string
 }
 
 type RestAPI struct {
@@ -36,7 +39,10 @@ func New(config *RestAPIConfig) (*RestAPI, error) {
 	api.db = db
 
 	api.router = http.NewServeMux()
-	
+
+	// seed for generating pseudo random numbers
+	rand.Seed(time.Now().Unix())
+
 	return api, nil
 }
 
@@ -47,7 +53,7 @@ func (api *RestAPI) Start(ctx context.Context) error {
 	}
 	defer api.db.Close()
 
-	return http.ListenAndServe(api.config.BindAddr, api.router)
+	return http.ListenAndServe(":"+api.config.Port, api.router)
 }
 
 func (api *RestAPI) configureDatabase(ctx context.Context) error {

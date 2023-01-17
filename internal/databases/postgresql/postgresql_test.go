@@ -19,7 +19,7 @@ var (
 )
 
 func TestOpenPostgresDB(t *testing.T) {
-	err := db.Open(context.Background(), os.Getenv("DBURL"))
+	err := db.Open(context.Background(), os.Getenv("DB_URL"))
 	assert.Nil(t, err)
 }
 
