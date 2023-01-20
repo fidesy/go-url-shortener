@@ -3,14 +3,15 @@ package restapi
 import (
 	"context"
 	"fmt"
+	"github.com/fidesy/go-url-shortener/internal/mw"
 	"net/http"
 	"strings"
 )
 
 func (api *RestAPI) configureRouters() {
 	// /create?url=https://someurl.com
-	api.router.HandleFunc("/create", api.createURL)
-	api.router.HandleFunc("/", api.redirect)
+	api.router.Handle("/create", mw.Logger(api.createURL))
+	api.router.Handle("/", mw.Logger(api.redirect))
 }
 
 func (api *RestAPI) redirect(w http.ResponseWriter, r *http.Request) {

@@ -3,14 +3,18 @@ package shortener
 import (
 	"math/rand"
 	"strings"
+	"time"
 )
 
 var (
 	signs = "0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
 
+// Returns random string
 func GetRandomSequence(length int) string {
-	// Returns random string
+	// seed for generating pseudo random numbers
+	rand.Seed(time.Now().UnixNano())
+
 	var str = strings.Builder{}
 	str.Grow(length)
 

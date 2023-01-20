@@ -3,9 +3,8 @@ package restapi
 import (
 	"context"
 	"github.com/fidesy/go-url-shortener/internal/databases/database"
-	"math/rand"
+	"log"
 	"net/http"
-	"time"
 )
 
 // RestAPIConfig
@@ -40,9 +39,6 @@ func New(config *RestAPIConfig) (*RestAPI, error) {
 
 	api.router = http.NewServeMux()
 
-	// seed for generating pseudo random numbers
-	rand.Seed(time.Now().Unix())
-
 	return api, nil
 }
 
@@ -53,6 +49,7 @@ func (api *RestAPI) Start(ctx context.Context) error {
 	}
 	defer api.db.Close()
 
+	log.Println("Server started")
 	return http.ListenAndServe(":"+api.config.Port, api.router)
 }
 
