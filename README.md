@@ -8,39 +8,26 @@ simple url shortener written in Go.
 git clone https://github.com/fidesy/go-url-shortener.git
 cd go-url-shortener
 ```
-2. Create .env file with the following variables. The HOST variable is only needed to create a response with a short URL.
-```
-# Example
-HOST=http://localhost
-PORT=80
 
-# Postgres credentials to create the database
-POSTGRES_USER=xsecretuser
-POSTGRES_PASSWORD=kj1890Opokb19lf
-POSTGRES_DB=urls
-
-# We use urlsdb host - PostgreSQL docker container name 
-DB_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@urlsdb/${POSTGRES_DB}?sslmode=disable
-DB_NAME=postgresql
-```
-3. Run app.
+2. Run app.
 ```
 docker compose up -d
 ```
+
 ## Usage
 
 Create short URL
 ```bash
-curl -X POST "http://localhost/create?url=https://vk.com"
+curl -X POST -d '{"original_url": "https://vk.com"}' "http://localhost:8000/create"
 
->>> http://localhost:80/ti2SMt
+>>> http://localhost:8000/ti2SMt
 ```
 
 Get original URL and Redirect
 ```bash
-curl http://localhost/ti2SMt
+curl http://localhost:8000/ti2SMt
 
->>> <a href="https://vk.com">Permanent Redirect</a>.
+>>> <a href="https://vk.com">Temporary Redirect</a>.
 ```
 ## Todo
 
