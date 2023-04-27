@@ -1,0 +1,9 @@
+host: http://localhost
+port: 8000
+postgres:
+  username: postgres
+  password: postgres
+  host: localhost
+  port: 5432
+  dbname: postgres
+  sslmode: disable

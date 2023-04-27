@@ -2,9 +2,11 @@ name: Main workflow file
 
 on:
   push:
-    branches: [main]
+    branches:
+      - '*'
   pull_request:
-    branches: [main]
+    branches:
+      - '*'
 
 jobs:
   Test:
@@ -32,8 +34,3 @@ jobs:
 
       - name: run mock tests
         run: go test -v ./...
-        env:
-          HOST: http://localhost
-          PORT: 8080
-          DB_URL: postgres://postgres:postgres@localhost:5432/postgres
-          DB_NAME: postgresql
