@@ -1,4 +1,4 @@
-package shortener
+package utils
 
 import (
 	"math/rand"
@@ -11,7 +11,7 @@ var (
 )
 
 // Returns random string
-func GetRandomSequence(length int) string {
+func GenerateRandomSequence(length int) string {
 	// seed for generating pseudo random numbers
 	rand.Seed(time.Now().UnixNano())
 

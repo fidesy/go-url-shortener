@@ -2,9 +2,11 @@ name: Main workflow file
 
 on:
   push:
-    branches: [main]
+    branches:
+      - '*'
   pull_request:
-    branches: [main]
+    branches:
+      - '*'
 
 jobs:
   Test:
@@ -22,7 +24,18 @@ jobs:
         ports:
           - 5432:5432
 
+        
+
     steps:
+      - name: Install PostgreSQL Client
+        run: sudo apt-get update && sudo apt-get install postgresql-client -y
+
+      - name: Initialize database
+        env:
+          PGPASSWORD: postgres
+        run: psql -h localhost -U postgres -c "CREATE TABLE IF NOT EXISTS urls(id SERIAL PRIMARY KEY,hash VARCHAR(6) UNIQUE, original_url TEXT,creation_date TIMESTAMP,expiration_date TIMESTAMP);"
+
+
       - uses: actions/checkout@v2
 
       - name: Set up Go
@@ -32,8 +45,3 @@ jobs:
 
       - name: run mock tests
         run: go test -v ./...
-        env:
-          HOST: http://localhost
-          PORT: 8080
-          DB_URL: postgres://postgres:postgres@localhost:5432/postgres
-          DB_NAME: postgresql

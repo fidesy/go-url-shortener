@@ -2,27 +2,46 @@ package main
 
 import (
 	"context"
-	"github.com/fidesy/go-url-shortener/internal/restapi"
+	"fmt"
 	"log"
-	"os"
+	"net/http"
+	"os/signal"
+	"syscall"
 
-	"github.com/joho/godotenv"
+	"github.com/fidesy/go-url-shortener/internal/handler"
+	"github.com/fidesy/go-url-shortener/internal/repository"
+	"github.com/fidesy/go-url-shortener/internal/repository/postgres"
+	"github.com/fidesy/go-url-shortener/internal/service"
+	"github.com/fidesy/go-url-shortener/pkg/utils"
 )
 
 func main() {
-	err := godotenv.Load()
+	conf, err := utils.LoadConfig("./configs/config.yaml")
 	checkError(err)
 
-	api, err := restapi.New(&restapi.RestAPIConfig{
-		Host:   os.Getenv("HOST"),
-		Port:   os.Getenv("PORT"),
-		DBURL:  os.Getenv("DB_URL"),
-		DBName: os.Getenv("DB_NAME"),
-	})
+	ctx, cancel := signal.NotifyContext(
+		context.Background(),
+		syscall.SIGINT,
+		syscall.SIGTERM,
+		syscall.SIGHUP,
+		syscall.SIGQUIT,
+	)
+	defer cancel()
+
+	pool, err := postgres.NewPostgresPool(ctx, conf.Postgres)
 	checkError(err)
 
-	err = api.Start(context.Background())
-	checkError(err)
+	repos := repository.NewRepository(pool)
+	services := service.NewService(conf, repos)
+	handlers := handler.NewHandler(services)
+	routers := handlers.InitRoutes()
+
+	go func() {
+		err = http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), routers)
+		checkError(err)
+	}()
+
+	<-ctx.Done()
 }
 
 func checkError(err error) {

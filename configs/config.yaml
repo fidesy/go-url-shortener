@@ -1,0 +1,9 @@
+host: http://localhost
+port: 8000
+postgres:
+  username: postgres
+  password: postgres
+  host: urlsdb
+  port:
+  dbname: postgres
+  sslmode: disable
