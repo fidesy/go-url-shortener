@@ -11,7 +11,7 @@ import (
 func NewPostgresPool(ctx context.Context, conf config.PostgresConfig) (*pgxpool.Pool, error) {
 	pool, err := pgxpool.New(
 		ctx,
-		fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
 			conf.Username,
 			conf.Password,
 			conf.Host,

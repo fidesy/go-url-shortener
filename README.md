@@ -20,7 +20,7 @@ Create short URL
 ```bash
 curl -X POST -d '{"original_url": "https://vk.com"}' "http://localhost:8000/create"
 
->>> http://localhost:8000/ti2SMt
+>>> {"short_url": "http://localhost:8000/ti2SMt"}
 ```
 
 Get original URL and Redirect

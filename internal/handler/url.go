@@ -28,7 +28,7 @@ func (h *Handler) createShortURL(c *gin.Context) {
 
 	shortURL := h.services.URL.CreateShortURL(input)
 
-	c.JSON(http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusCreated, map[string]interface{}{
 		"short_url": shortURL,
 	})
 }
