@@ -6,7 +6,8 @@ import (
 )
 
 type URL struct {
-	ID             int       `json:"id" db:"id"`
+	ID             int       `json:"-" db:"id"`
+	UserID         int       `json:"-" db:"user_id"`
 	Hash           string    `json:"hash" db:"hash"`
 	OriginalURL    string    `json:"original_url" db:"original_url" binding:"required"`
 	CreationDate   time.Time `json:"creation_date" db:"creation_date"`

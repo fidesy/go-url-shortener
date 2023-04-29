@@ -24,6 +24,11 @@ var (
 		{OriginalURL: "https://amazon.com/"},
 		{OriginalURL: "https://apple.com/some/path"},
 	}
+	urlUser = domain.User{
+		Name:     "User",
+		Username: "urluser",
+		Password: "urluser",
+	}
 )
 
 func GetRouter(t *testing.T) *gin.Engine {
@@ -38,8 +43,35 @@ func GetRouter(t *testing.T) *gin.Engine {
 	return handler.InitRoutes()
 }
 
+func getAuthorizationToken(t *testing.T) string {
+	router := GetRouter(t)
+
+	body, _ := json.Marshal(urlUser)
+	req, _ := http.NewRequest(http.MethodPost, "/auth/sign-up", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	// Sign In
+	req, _ = http.NewRequest(http.MethodPost, "/auth/sign-in", bytes.NewBuffer(body))
+	w = httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	type responseBody struct {
+		Token string `json:"token"`
+	}
+
+	var respBody responseBody
+	err := json.Unmarshal(w.Body.Bytes(), &respBody)
+	assert.Nil(t, err)
+
+	return respBody.Token
+}
+
 func TestURLHandler_createShortURL(t *testing.T) {
 	router := GetRouter(t)
+	token := getAuthorizationToken(t)
 
 	for i, url := range urls {
 		body, _ := json.Marshal(domain.URL{
@@ -47,7 +79,7 @@ func TestURLHandler_createShortURL(t *testing.T) {
 		})
 
 		req, _ := http.NewRequest(http.MethodPost, "/create", bytes.NewBuffer(body))
-
+		req.Header.Add("Authorization", "Bearer "+token)
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 		assert.Equal(t, http.StatusCreated, w.Code)

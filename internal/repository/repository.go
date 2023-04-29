@@ -7,11 +7,13 @@ import (
 )
 
 type Repository struct {
-	URL domain.URLRepository
+	URL  domain.URLRepository
+	User domain.UserRepository
 }
 
 func NewRepository(pool *pgxpool.Pool) *Repository {
 	return &Repository{
 		URL: postgres.NewURLRepository(pool),
+		User: postgres.NewUserRepository(pool),
 	}
 }

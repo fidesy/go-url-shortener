@@ -51,7 +51,11 @@ func (s *URLService) CreateShortURL(url domain.URL) string {
 		break
 	}
 
-	shortURL := fmt.Sprintf("%s:%d/%s", s.conf.Host, s.conf.Port, hash)
+	if s.conf.Port != "" {
+		s.conf.Port = ":" + s.conf.Port
+	}
+
+	shortURL := fmt.Sprintf("%s%s/%s", s.conf.Host, s.conf.Port, hash)
 
 	return shortURL
 }

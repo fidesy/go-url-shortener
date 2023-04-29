@@ -21,7 +21,8 @@ func (r *URLRepository) CreateURL(ctx context.Context, url domain.URL) (int, err
 	var id int
 	err := r.pool.QueryRow(
 		ctx,
-		"INSERT INTO urls(hash, original_url, creation_date, expiration_date) VALUES($1, $2, $3, $4) RETURNING id",
+		"INSERT INTO urls(user_id, hash, original_url, creation_date, expiration_date) VALUES($1, $2, $3, $4, $5) RETURNING id",
+		url.UserID,
 		url.Hash,
 		url.OriginalURL,
 		url.CreationDate,

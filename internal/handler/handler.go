@@ -18,8 +18,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	
 	router.Use(gin.Logger())
 
+	auth := router.Group("/auth")
+	auth.POST("/sign-up", h.signUp)
+	auth.POST("/sign-in", h.signIn)
+
 	router.GET("/:hash", h.redirect)
-	router.POST("/create", h.createShortURL)
+	
+	api := router.Group("/", h.userIdentify)
+	api.POST("/create", h.createShortURL)
 
 	return router
 }

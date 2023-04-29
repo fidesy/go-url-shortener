@@ -9,28 +9,41 @@ git clone https://github.com/fidesy/go-url-shortener.git
 cd go-url-shortener
 ```
 
-2. Run app.
+2. Rename .env.example to .env
+```
+cp .env.example .env
+``` 
+
+3. Run app.
 ```
 docker compose up -d
 ```
 
 ## Usage
 
+Sign up
+```bash
+curl -X POST -d '{"name": "John", "username": "john", "password": "john"}' http://localhost:8000/auth/sign-up
+
+# {"id": 1}
+```
+
+Sign in and get authorization token
+```bash
+curl -X POST -d '{"username": "john", "password": "john"}' http://localhost:8000/auth/sign-in
+
+# {"token": "YOUR_TOKEN"}
+```
 Create short URL
 ```bash
-curl -X POST -d '{"original_url": "https://vk.com"}' "http://localhost:8000/create"
+curl -X POST -H "Authorization: Bearer <YOUR_TOKEN>" -d '{"original_url": "https://vk.com"}' "http://localhost:8000/create"
 
->>> {"short_url": "http://localhost:8000/ti2SMt"}
+# {"short_url": "http://localhost:8000/ti2SMt"}
 ```
 
 Get original URL and Redirect
 ```bash
 curl http://localhost:8000/ti2SMt
 
->>> <a href="https://vk.com">Temporary Redirect</a>.
-```
-## Todo
-
-1. User authorization (api keys)
-2. Hash function for creating short url, now is using random sequence.
-3. Add more tests
+# <a href="https://vk.com">Temporary Redirect</a>.
+`

@@ -19,12 +19,20 @@ func (h *Handler) redirect(c *gin.Context) {
 }
 
 func (h *Handler) createShortURL(c *gin.Context) {
+	userID, err := getUserID(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	var input domain.URL
 
 	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid request body")
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	input.UserID = userID
 
 	shortURL := h.services.URL.CreateShortURL(input)
 

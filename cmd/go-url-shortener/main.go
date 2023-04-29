@@ -37,7 +37,7 @@ func main() {
 	routers := handlers.InitRoutes()
 
 	go func() {
-		err = http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), routers)
+		err = http.ListenAndServe(fmt.Sprintf(":%s", conf.Port), routers)
 		checkError(err)
 	}()
 

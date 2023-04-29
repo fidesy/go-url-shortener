@@ -3,6 +3,7 @@ module github.com/fidesy/go-url-shortener
 go 1.19
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.9.0
 	github.com/jackc/pgx/v5 v5.2.0
 	github.com/stretchr/testify v1.8.1
