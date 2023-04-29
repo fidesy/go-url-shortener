@@ -46,4 +46,4 @@ Get original URL and Redirect
 curl http://localhost:8000/ti2SMt
 
 # <a href="https://vk.com">Temporary Redirect</a>.
-`
+```

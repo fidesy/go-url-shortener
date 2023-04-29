@@ -33,7 +33,7 @@ jobs:
       - name: Initialize database
         env:
           PGPASSWORD: postgres
-        run: psql -h localhost -U postgres -c "CREATE TABLE IF NOT EXISTS urls(id SERIAL PRIMARY KEY,hash VARCHAR(6) UNIQUE, original_url TEXT,creation_date TIMESTAMP,expiration_date TIMESTAMP);"
+        run: psql -h localhost -U postgres -c "CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY,name VARCHAR(100),username VARCHAR(50),password_hash VARCHAR(100));CREATE TABLE IF NOT EXISTS urls(id SERIAL PRIMARY KEY,user_id INT,hash VARCHAR(6) UNIQUE,original_url TEXT,creation_date TIMESTAMP,expiration_date TIMESTAMP);"
 
 
       - uses: actions/checkout@v2
@@ -45,3 +45,6 @@ jobs:
 
       - name: run mock tests
         run: go test -v ./...
+
+        env:
+          GIN_MODE: release
