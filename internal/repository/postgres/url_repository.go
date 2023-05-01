@@ -17,7 +17,7 @@ func NewURLRepository(pool *pgxpool.Pool) *URLRepository {
 
 var _ domain.URLRepository = &URLRepository{}
 
-func (r *URLRepository) CreateURL(ctx context.Context, url domain.URL) (int, error) {
+func (r *URLRepository) CreateURL(ctx context.Context, url domain.URL) (interface{}, error) {
 	var id int
 	err := r.pool.QueryRow(
 		ctx,

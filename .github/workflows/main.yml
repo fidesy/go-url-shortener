@@ -23,6 +23,16 @@ jobs:
 
         ports:
           - 5432:5432
+      
+      mongo:
+        image: mongo
+
+        env:
+          MONGO_INITDB_ROOT_USERNAME: mongo
+          MONGO_INITDB_ROOT_PASSWORD: mongo
+          
+        ports:
+          - 27017:27017
 
         
 

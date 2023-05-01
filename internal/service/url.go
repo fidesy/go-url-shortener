@@ -37,15 +37,20 @@ func (s *URLService) CreateShortURL(url domain.URL) string {
 		err  error
 	)
 
-	url.CreationDate = time.Now().UTC()
-
 	for {
 		hash = utils.GenerateRandomSequence(6)
+		_, err = s.repo.URL.GetURLByHash(context.Background(), hash)
+		// hash already exists
+		if err == nil {
+			continue
+		}
+
 		url.Hash = hash
+		url.CreationDate = time.Now().UTC()
+
 		_, err = s.repo.URL.CreateURL(context.Background(), url)
 		if err != nil {
 			log.Println(err)
-			continue
 		}
 
 		break

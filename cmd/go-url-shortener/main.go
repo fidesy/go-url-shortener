@@ -10,7 +10,6 @@ import (
 
 	"github.com/fidesy/go-url-shortener/internal/handler"
 	"github.com/fidesy/go-url-shortener/internal/repository"
-	"github.com/fidesy/go-url-shortener/internal/repository/postgres"
 	"github.com/fidesy/go-url-shortener/internal/service"
 	"github.com/fidesy/go-url-shortener/pkg/utils"
 )
@@ -28,10 +27,9 @@ func main() {
 	)
 	defer cancel()
 
-	pool, err := postgres.NewPostgresPool(ctx, conf.Postgres)
+	repos, err := repository.NewRepository(ctx, conf)
 	checkError(err)
 
-	repos := repository.NewRepository(pool)
 	services := service.NewService(conf, repos)
 	handlers := handler.NewHandler(services)
 	routers := handlers.InitRoutes()

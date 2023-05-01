@@ -19,7 +19,7 @@ func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
 
 var _ domain.UserRepository = &UserRepository{}
 
-func (r *UserRepository) Create(ctx context.Context, user domain.User) (int, error) {
+func (r *UserRepository) Create(ctx context.Context, user domain.User) (interface{}, error) {
 	var id int
 	err := r.pool.QueryRow(
 		ctx,
@@ -83,11 +83,11 @@ func (r *UserRepository) UsernameExists(ctx context.Context, username string) (b
 		"SELECT id FROM users WHERE username=$1",
 		username,
 	).Scan(&id)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return false, nil
-	}
-
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return false, nil
+		}
+
 		return false, err
 	}
 
