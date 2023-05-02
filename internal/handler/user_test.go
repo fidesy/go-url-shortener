@@ -20,7 +20,7 @@ var (
 )
 
 func TestUserHandler_signUp(t *testing.T) {
-	router := GetRouter(t)
+	router := getRouter(t)
 	body, _ := json.Marshal(user)
 	req, _ := http.NewRequest(http.MethodPost, "/auth/sign-up", bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
@@ -29,7 +29,7 @@ func TestUserHandler_signUp(t *testing.T) {
 }
 
 func TestUserHandler_signIn(t *testing.T) {
-	router := GetRouter(t)
+	router := getRouter(t)
 	body, _ := json.Marshal(user)
 	req, _ := http.NewRequest(http.MethodPost, "/auth/sign-in", bytes.NewBuffer(body))
 	w := httptest.NewRecorder()

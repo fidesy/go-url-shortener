@@ -14,7 +14,10 @@ cd go-url-shortener
 cp .env.example .env
 ``` 
 
-3. Run app.
+3. Select preferable database in [./configs/config.yaml](./configs/config.yaml#3) 
+field *database* options: postgres, mongo
+
+4. Run app.
 ```
 docker compose up -d
 ```

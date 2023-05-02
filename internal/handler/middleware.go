@@ -40,16 +40,16 @@ func (h *Handler) userIdentify(c *gin.Context) {
 	c.Set(userCtx, userID)
 }
 
-func getUserID(c *gin.Context) (int, error) {
+func getUserID(c *gin.Context) (interface{}, error) {
 	id, ok := c.Get(userCtx)
 	if !ok {
 		return 0, errors.New("user id not found")
 	}
 
-	idInt, ok := id.(int)
-	if !ok {
-		return 0, errors.New("user id is of invalid type")
-	}
+	// idInt, ok := id.(interface{})
+	// if !ok {
+	// 	return 0, errors.New("user id is of invalid type")
+	// }
 
-	return idInt, nil
+	return id, nil
 }

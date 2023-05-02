@@ -1,9 +1,16 @@
 host: http://localhost
 port: 8000
+database: postgres
 postgres:
   username: postgres
   password: postgres
-  host: urlsdb
+  host: urls-postgres
   port:
   dbname: postgres
   sslmode: disable
+
+mongo:
+  username: mongo
+  password: mongo
+  host: urls-mongo
+  port: 

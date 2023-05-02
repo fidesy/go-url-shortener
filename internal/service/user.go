@@ -13,9 +13,9 @@ import (
 )
 
 type User interface {
-	Create(user domain.User) (int, error)
+	Create(user domain.User) (interface{}, error)
 	GenerateToken(username, password string) (string, error)
-	ParseToken(accessToken string) (int, error)
+	ParseToken(accessToken string) (interface{}, error)
 }
 
 const (
@@ -26,7 +26,7 @@ const (
 
 type tokenClaims struct {
 	jwt.StandardClaims
-	UserID int `json:"user_id"`
+	UserID interface{} `json:"user_id"`
 }
 
 type UserService struct {
@@ -39,7 +39,7 @@ func NewUserService(repo *repository.Repository) *UserService {
 
 var _ User = &UserService{}
 
-func (s *UserService) Create(user domain.User) (int, error) {
+func (s *UserService) Create(user domain.User) (interface{}, error) {
 	exists, err := s.repo.User.UsernameExists(context.Background(), user.Username)
 	if err != nil {
 		return 0, err
@@ -70,7 +70,7 @@ func (s *UserService) GenerateToken(username, password string) (string, error) {
 	return token.SignedString([]byte(signingKey))
 }
 
-func (s *UserService) ParseToken(accessToken string) (int, error) {
+func (s *UserService) ParseToken(accessToken string) (interface{}, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")

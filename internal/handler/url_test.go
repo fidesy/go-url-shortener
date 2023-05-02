@@ -12,7 +12,6 @@ import (
 	"github.com/fidesy/go-url-shortener/internal/config"
 	"github.com/fidesy/go-url-shortener/internal/domain"
 	"github.com/fidesy/go-url-shortener/internal/repository"
-	"github.com/fidesy/go-url-shortener/internal/repository/postgres"
 	"github.com/fidesy/go-url-shortener/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -31,12 +30,12 @@ var (
 	}
 )
 
-func GetRouter(t *testing.T) *gin.Engine {
-	conf := config.DefaultConfig
-	pool, err := postgres.NewPostgresPool(context.Background(), conf.Postgres)
+func getRouter(t *testing.T) *gin.Engine {
+	conf := config.Default
+
+	repos, err := repository.NewRepository(context.Background(), config.Default)
 	assert.Nil(t, err)
 
-	repos := repository.NewRepository(pool)
 	services := service.NewService(conf, repos)
 	handler := NewHandler(services)
 
@@ -44,7 +43,7 @@ func GetRouter(t *testing.T) *gin.Engine {
 }
 
 func getAuthorizationToken(t *testing.T) string {
-	router := GetRouter(t)
+	router := getRouter(t)
 
 	body, _ := json.Marshal(urlUser)
 	req, _ := http.NewRequest(http.MethodPost, "/auth/sign-up", bytes.NewBuffer(body))
@@ -70,7 +69,7 @@ func getAuthorizationToken(t *testing.T) string {
 }
 
 func TestURLHandler_createShortURL(t *testing.T) {
-	router := GetRouter(t)
+	router := getRouter(t)
 	token := getAuthorizationToken(t)
 
 	for i, url := range urls {
@@ -95,7 +94,7 @@ func TestURLHandler_createShortURL(t *testing.T) {
 }
 
 func TestURLHandler_redirect(t *testing.T) {
-	router := GetRouter(t)
+	router := getRouter(t)
 
 	for _, url := range urls {
 		req, _ := http.NewRequest(http.MethodGet, "/"+url.Hash, nil)

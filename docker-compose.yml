@@ -1,7 +1,8 @@
 version: "3.9"
 services:
+
   postgres:
-    container_name: urlsdb
+    container_name: urls-postgres
     image: postgres:latest
     env_file:
       - .env
@@ -15,6 +16,17 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  mongo:
+    container_name: urls-mongo
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+
+    ports:
+      - "27017:27017"
   
   url-shortener:
     container_name: url-shortener

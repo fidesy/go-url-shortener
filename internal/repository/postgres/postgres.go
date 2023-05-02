@@ -5,10 +5,11 @@ import (
 	"fmt"
 
 	"github.com/fidesy/go-url-shortener/internal/config"
+	"github.com/fidesy/go-url-shortener/internal/domain"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func NewPostgresPool(ctx context.Context, conf config.PostgresConfig) (*pgxpool.Pool, error) {
+func NewPool(ctx context.Context, conf config.Postgres) (*pgxpool.Pool, error) {
 	pool, err := pgxpool.New(
 		ctx,
 		fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
@@ -28,4 +29,16 @@ func NewPostgresPool(ctx context.Context, conf config.PostgresConfig) (*pgxpool.
 	}
 
 	return pool, nil
+}
+
+type Repository struct {
+	URL  domain.URLRepository
+	User domain.UserRepository
+}
+
+func NewRepository(pool *pgxpool.Pool) *Repository {
+	return &Repository{
+		URL:  NewURLRepository(pool),
+		User: NewUserRepository(pool),
+	}
 }

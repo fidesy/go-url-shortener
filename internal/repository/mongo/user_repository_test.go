@@ -1,4 +1,4 @@
-package postgres
+package mongo
 
 import (
 	"context"
@@ -19,10 +19,10 @@ var (
 )
 
 func getUserRepository(t *testing.T) *UserRepository {
-	pool, err := NewPool(context.Background(), config.Default.Postgres)
+	cli, err := New(context.Background(), config.Default.Mongo)
 	assert.Nil(t, err)
 
-	repo := NewUserRepository(pool)
+	repo := NewUserRepository(cli.Database("shortener").Collection("users"))
 
 	return repo
 }
@@ -41,6 +41,7 @@ func TestUserRepository_GetByUsername(t *testing.T) {
 	u, err := repo.Get(context.Background(), user.Username, user.Password)
 	assert.Nil(t, err)
 	assert.NotNil(t, u)
+
 }
 
 func TestUserRepository_UsernameExists(t *testing.T) {
@@ -73,4 +74,3 @@ func TestUserRepository_DeleteByUsername(t *testing.T) {
 	_, err = repo.Get(context.Background(), user.Username, user.Password)
 	assert.NotNil(t, err)
 }
-
