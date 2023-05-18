@@ -18,15 +18,21 @@ type URL interface {
 }
 
 type URLService struct {
-	conf *config.Config
+	conf config.Config
 	repo *repository.Repository
 }
 
-func NewURLService(conf *config.Config, repo *repository.Repository) *URLService {
-	return &URLService{
+func NewURLService(conf config.Config, repo *repository.Repository) *URLService {
+	s := &URLService{
 		conf: conf,
 		repo: repo,
 	}
+
+	if s.conf.Port != "" {
+		s.conf.Port = ":" + s.conf.Port
+	}
+
+	return s
 }
 
 var _ URL = &URLService{}
@@ -54,10 +60,6 @@ func (s *URLService) CreateShortURL(url domain.URL) string {
 		}
 
 		break
-	}
-
-	if s.conf.Port != "" {
-		s.conf.Port = ":" + s.conf.Port
 	}
 
 	shortURL := fmt.Sprintf("%s%s/%s", s.conf.Host, s.conf.Port, hash)

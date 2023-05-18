@@ -24,7 +24,7 @@ type Mongo struct {
 	Port     string `yaml:"port"`
 }
 
-var Default = &Config{
+var Default = Config{
 	Host: "http://localhost",
 	Port: "8000",
 	Database: "postgres",

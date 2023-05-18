@@ -15,7 +15,7 @@ type Repository struct {
 	User domain.UserRepository
 }
 
-func NewRepository(ctx context.Context, conf *config.Config) (*Repository, error) {
+func NewRepository(ctx context.Context, conf config.Config) (*Repository, error) {
 	var repos = new(Repository)
 
 	switch conf.Database {

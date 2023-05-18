@@ -10,7 +10,7 @@ type Service struct {
 	User
 }
 
-func NewService(conf *config.Config, repos *repository.Repository) *Service {
+func NewService(conf config.Config, repos *repository.Repository) *Service {
 	return &Service{
 		URL: NewURLService(conf, repos),
 		User: NewUserService(repos),
